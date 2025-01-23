@@ -4,6 +4,9 @@ public class NewMonoBehaviourScript : MonoBehaviour
 {
     public Rigidbody sphereRigidbody;
     public float ballSpeed = 2f;
+    public float jumpForce = 5f;
+
+    public bool isGrounded = false;
     void Start()
     
     {
@@ -40,5 +43,27 @@ public class NewMonoBehaviourScript : MonoBehaviour
 
         // Apply force to the rigidbody
         sphereRigidbody.AddForce(inputXZPlane * ballSpeed);
+        if (isGrounded && Input.GetKeyDown(KeyCode.Space))
+        {
+            // Add upward force (impulse mode gives that immediate "jump" feel)
+            sphereRigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        }
+    }
+    public void OnCollisionEnter(Collision collision)
+    {
+        // If the collided object is tagged "Ground," mark isGrounded = true
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = true;
+        }
+    }
+
+    public void OnCollisionExit(Collision collision)
+    {
+        // If we stop colliding with the Ground, mark isGrounded = false
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = false;
+        }
     }
 }
